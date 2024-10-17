@@ -19,6 +19,7 @@ public class ConnectionManager {
 
     static {
         loadDriver();
+        initConnectionPool();
     }
 
     private static void loadDriver() {
@@ -41,7 +42,7 @@ public class ConnectionManager {
         }
     }
 
-    private static Connection getConnection() {
+    public static Connection getConnection() {
         try {
             return pool.take();
         } catch (InterruptedException e) {
