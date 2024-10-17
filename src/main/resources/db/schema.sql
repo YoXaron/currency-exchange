@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS exchange_rates
     id                 SERIAL PRIMARY KEY,
     base_currency_id   INTEGER        NOT NULL,
     target_currency_id INTEGER        NOT NULL,
-    rate               DECIMAL(18, 0) NOT NULL,
+    rate               DECIMAL(18, 8) NOT NULL,
     FOREIGN KEY (base_currency_id) REFERENCES currencies (id),
     FOREIGN KEY (target_currency_id) REFERENCES currencies (id)
 );
