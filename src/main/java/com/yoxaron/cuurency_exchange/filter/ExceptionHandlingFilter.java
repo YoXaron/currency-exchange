@@ -2,14 +2,13 @@ package com.yoxaron.cuurency_exchange.filter;
 
 import com.yoxaron.cuurency_exchange.exception.ApiException;
 import com.yoxaron.cuurency_exchange.exception.InternalServerError;
-import com.yoxaron.cuurency_exchange.utils.JsonResponseUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static com.yoxaron.cuurency_exchange.utils.JsonResponseUtil.*;
+import static com.yoxaron.cuurency_exchange.utils.JsonResponseUtil.sendErrorResponse;
 
 @WebFilter("/*")
 public class ExceptionHandlingFilter implements Filter {

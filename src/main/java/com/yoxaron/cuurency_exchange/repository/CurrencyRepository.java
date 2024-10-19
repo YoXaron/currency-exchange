@@ -1,8 +1,11 @@
 package com.yoxaron.cuurency_exchange.repository;
 
+import com.yoxaron.cuurency_exchange.exception.AlreadyExistsException;
+import com.yoxaron.cuurency_exchange.exception.InternalServerError;
 import com.yoxaron.cuurency_exchange.model.Currency;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -102,9 +105,14 @@ public class CurrencyRepository implements Repository<Long, Currency> {
                 currency.setId(keys.getLong("id"));
             }
             return currency;
+        } catch (PSQLException e) {
+            if ("23505".equals(e.getSQLState())) {
+                throw new AlreadyExistsException();
+            } else {
+                throw new InternalServerError();
+            }
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 
