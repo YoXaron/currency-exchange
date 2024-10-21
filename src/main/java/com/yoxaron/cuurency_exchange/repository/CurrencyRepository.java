@@ -57,8 +57,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             }
             return currencies;
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 
@@ -73,8 +72,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             }
             return Optional.ofNullable(currency);
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 
@@ -88,8 +86,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             }
             return Optional.ofNullable(currency);
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 
@@ -125,8 +122,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             statement.setLong(4, currency.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 
@@ -136,8 +132,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             statement.setLong(1, id);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            //TODO
-            throw new RuntimeException(e);
+            throw new InternalServerError();
         }
     }
 

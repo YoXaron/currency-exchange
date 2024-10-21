@@ -4,7 +4,6 @@ import com.yoxaron.cuurency_exchange.exception.InternalServerError;
 import com.yoxaron.cuurency_exchange.model.Currency;
 import com.yoxaron.cuurency_exchange.service.CurrencyService;
 import com.yoxaron.cuurency_exchange.utils.PathParser;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +28,7 @@ public class CurrenciesServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             Currency currency = PathParser.extractCurrency(req);
             sendJsonResponse(resp, currencyService.save(currency), HttpServletResponse.SC_CREATED);
