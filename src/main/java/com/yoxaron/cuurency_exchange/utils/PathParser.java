@@ -36,6 +36,19 @@ public class PathParser {
         return currency;
     }
 
+    public static String[] extractCurrencyPairCodes(HttpServletRequest request) throws BadRequestException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null && pathInfo.length() == 7 && pathInfo.startsWith("/")) {
+            String baseCurrencyCode = pathInfo.substring(1, 4).toUpperCase();
+            String targetCurrencyCode = pathInfo.substring(4).toUpperCase();
+
+            if (validateCode(baseCurrencyCode) && validateCode(targetCurrencyCode)) {
+                return new String[] { baseCurrencyCode, targetCurrencyCode };
+            }
+        }
+        throw new BadRequestException();
+    }
+
     private static boolean validateCode(String code) {
         return code.toUpperCase().matches("[A-Z]{3}");
     }

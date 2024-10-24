@@ -66,10 +66,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
         try (var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             statement.setLong(1, id);
             var resultSet = statement.executeQuery();
-            Currency currency = null;
-            if (resultSet.next()) {
-                currency = mapRow(resultSet);
-            }
+            var currency = resultSet.next() ? mapRow(resultSet) : null;
             return Optional.ofNullable(currency);
         } catch (SQLException e) {
             throw new InternalServerError();
@@ -80,10 +77,7 @@ public class CurrencyRepository implements Repository<Long, Currency> {
         try (var statement = connection.prepareStatement(FIND_BY_CODE_SQL)) {
             statement.setString(1, code);
             var resultSet = statement.executeQuery();
-            Currency currency = null;
-            if (resultSet.next()) {
-                currency = mapRow(resultSet);
-            }
+            var currency = resultSet.next() ? mapRow(resultSet) : null;
             return Optional.ofNullable(currency);
         } catch (SQLException e) {
             throw new InternalServerError();
