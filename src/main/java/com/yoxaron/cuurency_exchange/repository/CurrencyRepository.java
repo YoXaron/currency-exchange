@@ -97,11 +97,10 @@ public class CurrencyRepository implements Repository<Long, Currency> {
             }
             return currency;
         } catch (PSQLException e) {
-            if ("23505".equals(e.getSQLState())) {
+            if (UNIQUE_VIOLATION_CODE.equals(e.getSQLState())) {
                 throw new AlreadyExistsException();
-            } else {
-                throw new InternalServerError();
             }
+            throw new InternalServerError();
         } catch (SQLException e) {
             throw new InternalServerError();
         }

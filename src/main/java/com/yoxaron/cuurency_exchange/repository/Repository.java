@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface Repository<K, E> {
 
+    String UNIQUE_VIOLATION_CODE = "23505";
+
     List<E> findAll(Connection connection);
 
     Optional<E> findById(Connection connection, K id);

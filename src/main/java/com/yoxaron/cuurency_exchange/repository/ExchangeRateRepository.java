@@ -1,15 +1,18 @@
 package com.yoxaron.cuurency_exchange.repository;
 
+import com.yoxaron.cuurency_exchange.exception.AlreadyExistsException;
 import com.yoxaron.cuurency_exchange.exception.InternalServerError;
 import com.yoxaron.cuurency_exchange.model.Currency;
 import com.yoxaron.cuurency_exchange.model.ExchangeRate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.postgresql.util.PSQLException;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,12 +95,29 @@ public class ExchangeRateRepository implements Repository<Long, ExchangeRate> {
     }
 
     @Override
-    public ExchangeRate save(Connection connection, ExchangeRate entity) {
-        return null;
+    public ExchangeRate save(Connection connection, ExchangeRate exchangeRate) {
+        try (var statement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setLong(1, exchangeRate.getBaseCurrency().getId());
+            statement.setLong(2, exchangeRate.getTargetCurrency().getId());
+            statement.setBigDecimal(3, exchangeRate.getRate());
+            statement.executeUpdate();
+            var keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                exchangeRate.setId(keys.getLong("id"));
+            }
+            return exchangeRate;
+        } catch (PSQLException e) {
+            if (UNIQUE_VIOLATION_CODE.equals(e.getSQLState())) {
+                throw new AlreadyExistsException();
+            }
+            throw new InternalServerError();
+        } catch (SQLException e) {
+            throw new InternalServerError();
+        }
     }
 
     @Override
-    public boolean update(Connection connection, ExchangeRate entity) {
+    public boolean update(Connection connection, ExchangeRate exchangeRate) {
         return false;
     }
 
