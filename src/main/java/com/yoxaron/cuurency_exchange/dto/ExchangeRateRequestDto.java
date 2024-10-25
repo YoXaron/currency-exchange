@@ -1,10 +1,16 @@
 package com.yoxaron.cuurency_exchange.dto;
 
+import lombok.*;
+
 import java.math.BigDecimal;
 
-public record ExchangeRateRequestDto(
-        String baseCurrencyCode,
-        String targetCurrencyCode,
-        BigDecimal rate
-) {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+public class ExchangeRateRequestDto {
+    private String baseCurrencyCode;
+    private String targetCurrencyCode;
+    private BigDecimal rate;
 }

@@ -1,5 +1,6 @@
 package com.yoxaron.cuurency_exchange.repository;
 
+import com.yoxaron.cuurency_exchange.dto.ExchangeRateRequestDto;
 import com.yoxaron.cuurency_exchange.exception.AlreadyExistsException;
 import com.yoxaron.cuurency_exchange.exception.InternalServerError;
 import com.yoxaron.cuurency_exchange.model.Currency;
@@ -79,10 +80,10 @@ public class ExchangeRateRepository implements Repository<Long, ExchangeRate> {
         return Optional.empty();
     }
 
-    public Optional<ExchangeRate> findByPair(Connection connection, String[] codes) {
+    public Optional<ExchangeRate> findByPair(Connection connection, ExchangeRateRequestDto requestDto) {
         try (var statement = connection.prepareStatement(FIND_BY_PAIR_SQL)) {
-            statement.setString(1, codes[0]);
-            statement.setString(2, codes[1]);
+            statement.setString(1, requestDto.getBaseCurrencyCode());
+            statement.setString(2, requestDto.getTargetCurrencyCode());
             System.out.println(statement);
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -118,7 +119,13 @@ public class ExchangeRateRepository implements Repository<Long, ExchangeRate> {
 
     @Override
     public boolean update(Connection connection, ExchangeRate exchangeRate) {
-        return false;
+        try (var statement = connection.prepareStatement(UPDATE_SQL)) {
+            statement.setBigDecimal(1, exchangeRate.getRate());
+            statement.setLong(2, exchangeRate.getId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new InternalServerError();
+        }
     }
 
     @Override

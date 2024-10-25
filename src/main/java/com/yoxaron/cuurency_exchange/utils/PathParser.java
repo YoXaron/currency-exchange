@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 public class PathParser {
 
     public static String extractCurrencyCode(HttpServletRequest request) throws BadRequestException {
-        String pathInfo = request.getPathInfo();
+        var pathInfo = request.getPathInfo();
         if (pathInfo != null && pathInfo.length() == 4 && pathInfo.startsWith("/")) {
-            String currencyCode = pathInfo.substring(1).toUpperCase();
+            var currencyCode = pathInfo.substring(1).toUpperCase();
             if (isValidCode(currencyCode)) {
                 return currencyCode;
             }
@@ -21,36 +21,46 @@ public class PathParser {
     }
 
     public static Currency extractCurrency(HttpServletRequest request) throws BadRequestException {
-        String name = request.getParameter("name");
-        String code = request.getParameter("code");
-        String sign = request.getParameter("sign");
+        var name = request.getParameter("name");
+        var code = request.getParameter("code");
+        var sign = request.getParameter("sign");
 
-        if (isValidField(name) || isValidCode(code) || isValidField(sign)) {
+        if (isValidField(name) && isValidCode(code) && isValidField(sign)) {
             return new Currency(null, code, name, sign);
         }
         throw new BadRequestException();
     }
 
-    public static String[] extractCurrencyPairCodes(HttpServletRequest request) throws BadRequestException {
-        String pathInfo = request.getPathInfo();
+    public static ExchangeRateRequestDto extractCurrencyPairCodes(HttpServletRequest request) throws BadRequestException {
+        var pathInfo = request.getPathInfo();
         if (pathInfo != null && pathInfo.length() == 7 && pathInfo.startsWith("/")) {
-            String baseCurrencyCode = pathInfo.substring(1, 4).toUpperCase();
-            String targetCurrencyCode = pathInfo.substring(4).toUpperCase();
+            var baseCurrencyCode = pathInfo.substring(1, 4).toUpperCase();
+            var targetCurrencyCode = pathInfo.substring(4).toUpperCase();
 
             if (isValidCode(baseCurrencyCode) && isValidCode(targetCurrencyCode)) {
-                return new String[]{baseCurrencyCode, targetCurrencyCode};
+                return new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, null);
             }
         }
         throw new BadRequestException();
     }
 
     public static ExchangeRateRequestDto extractExchangeRateRequestDto(HttpServletRequest request) throws BadRequestException {
-        String baseCurrencyCode = request.getParameter("baseCurrencyCode");
-        String targetCurrencyCode = request.getParameter("targetCurrencyCode");
-        String rate = request.getParameter("rate");
+        var baseCurrencyCode = request.getParameter("baseCurrencyCode");
+        var targetCurrencyCode = request.getParameter("targetCurrencyCode");
+        var rate = request.getParameter("rate");
 
-        if (isValidCode(baseCurrencyCode) || isValidCode(targetCurrencyCode) || isValidRate(rate)) {
+        if (isValidCode(baseCurrencyCode) && isValidCode(targetCurrencyCode) && isValidRate(rate)) {
             return new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, new BigDecimal(rate));
+        }
+        throw new BadRequestException();
+    }
+
+    public static ExchangeRateRequestDto extractExchangeRateUpdateRequestDto(HttpServletRequest request) throws BadRequestException {
+        var requestDto = extractCurrencyPairCodes(request);
+        var rate = request.getParameter("rate");
+        if (isValidRate(rate)) {
+            requestDto.setRate(new BigDecimal(rate));
+            return requestDto;
         }
         throw new BadRequestException();
     }
