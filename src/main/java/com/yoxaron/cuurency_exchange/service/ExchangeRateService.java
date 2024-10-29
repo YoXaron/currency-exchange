@@ -32,7 +32,8 @@ public class ExchangeRateService {
 
     public Optional<ExchangeRateDto> findByPairCode(ExchangeRateRequestDto requestDto) {
         return transactionManager.doWithoutTransaction(connection ->
-                exchangeRateRepository.findByPair(connection, requestDto)
+                exchangeRateRepository.findByPair(connection,
+                                requestDto.getBaseCurrencyCode(), requestDto.getTargetCurrencyCode())
                         .map(ModelMapper::toExchangeRateDto));
     }
 
@@ -51,7 +52,9 @@ public class ExchangeRateService {
 
     public ExchangeRateDto update(ExchangeRateRequestDto requestDto) {
         return transactionManager.doInTransaction(connection -> {
-            var exchangeRateOptional = exchangeRateRepository.findByPair(connection, requestDto);
+            var exchangeRateOptional = exchangeRateRepository.findByPair(connection,
+                    requestDto.getBaseCurrencyCode(), requestDto.getTargetCurrencyCode());
+
             if (exchangeRateOptional.isEmpty()) {
                 throw new NotFoundException();
             }

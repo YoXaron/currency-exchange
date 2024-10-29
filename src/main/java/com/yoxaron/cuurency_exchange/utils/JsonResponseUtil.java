@@ -3,7 +3,6 @@ package com.yoxaron.cuurency_exchange.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yoxaron.cuurency_exchange.dto.ErrorDto;
 import com.yoxaron.cuurency_exchange.exception.ApiException;
-import com.yoxaron.cuurency_exchange.exception.ErrorDetails;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -18,8 +17,8 @@ public class JsonResponseUtil {
     }
 
     public static void sendErrorResponse(HttpServletResponse resp, ApiException e) throws IOException {
-        ErrorDetails errorDetails = e.getErrorDetails();
-        ErrorDto errorDto = new ErrorDto(errorDetails.getMessage(), errorDetails.getCode());
+        var errorDetails = e.getErrorDetails();
+        var errorDto = new ErrorDto(errorDetails.getMessage(), errorDetails.getCode());
         sendJsonResponse(resp, errorDto, errorDto.code());
     }
 }

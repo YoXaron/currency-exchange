@@ -1,6 +1,7 @@
 package com.yoxaron.cuurency_exchange.utils;
 
 import com.yoxaron.cuurency_exchange.dto.ExchangeRateRequestDto;
+import com.yoxaron.cuurency_exchange.dto.ExchangeRequestDto;
 import com.yoxaron.cuurency_exchange.exception.BadRequestException;
 import com.yoxaron.cuurency_exchange.model.Currency;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,6 +62,25 @@ public class PathParser {
         if (isValidRate(rate)) {
             requestDto.setRate(new BigDecimal(rate));
             return requestDto;
+        }
+        throw new BadRequestException();
+    }
+
+    public static ExchangeRequestDto extractExchangeRequestDto(HttpServletRequest request) throws BadRequestException {
+        var from = request.getParameter("from");
+        var to = request.getParameter("to");
+        var amountParam = request.getParameter("amount");
+
+        if (isValidCode(from) && isValidCode(to) && isValidField(amountParam)) {
+            try {
+                var amount = new BigDecimal(amountParam);
+                if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new BadRequestException();
+                }
+                return new ExchangeRequestDto(from, to, amount);
+            } catch (NumberFormatException e) {
+                throw new BadRequestException();
+            }
         }
         throw new BadRequestException();
     }
