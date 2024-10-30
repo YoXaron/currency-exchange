@@ -134,15 +134,15 @@ public class ExchangeRateRepository implements Repository<Long, ExchangeRate> {
     private ExchangeRate mapRow(ResultSet resultSet) throws SQLException {
         Currency baseCurrency = new Currency(
                 resultSet.getLong("b_id"),
-                resultSet.getString("b_full_name"),
                 resultSet.getString("b_code"),
+                resultSet.getString("b_full_name"),
                 resultSet.getString("b_sign")
         );
 
         Currency targetCurrency = new Currency(
                 resultSet.getLong("t_id"),
-                resultSet.getString("t_full_name"),
                 resultSet.getString("t_code"),
+                resultSet.getString("t_full_name"),
                 resultSet.getString("t_sign")
         );
 
